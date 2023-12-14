@@ -7,8 +7,6 @@
 
 #include "bcm28xx_otp.h"
 
-extern void __iomem *otp_base;
-
 static inline void otp_delay(void) {
   udelay(1);
 }

@@ -5,6 +5,7 @@
 #include <linux/sysfs.h>
 #include <linux/init.h>
 #include <linux/types.h>
+#include <linux/platform_device.h>
 
 #include "bcm28xx_otp.h"
 
@@ -13,6 +14,8 @@
 
 static char command_buf[100]; // Buffer to store commands from 'in'
 static char output_buf[100];  // Buffer to store data for 'out'
+
+static struct platform_device *otp_platform_device;
 static struct kobject *otp_kobject;
 
 void __iomem *otp_base;
@@ -107,9 +110,15 @@ static int __init init_mod(void) {
   // printk(KERN_INFO "Value at OTP row %u: 0x%x\n", row, otp_read(row));
 
   int error = 0;
+  otp_platform_device = platform_device_register_simple("otp", -1, NULL, 0);
+  if (IS_ERR(otp_platform_device)) {
+    printk(KERN_ALERT "Failed to register platform device\n");
+    return PTR_ERR(otp_platform_device);
+  }
 
-  otp_kobject = kobject_create_and_add("otp_interface", kernel_kobj);
+  otp_kobject = kobject_create_and_add("interface", &otp_platform_device->dev.kobj);
   if (!otp_kobject) {
+    platform_device_unregister(otp_platform_device);
     return -ENOMEM;
   }
 
@@ -134,6 +143,7 @@ static void __exit exit_mod(void) {
     iounmap(otp_base);
   }
   kobject_put(otp_kobject);
+  platform_device_unregister(otp_platform_device);
 }
 
 module_init(init_mod);

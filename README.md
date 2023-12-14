@@ -3,7 +3,7 @@ Adapted from the work from [liberpi](https://github.com/librerpi/lk)'s fork of L
 Change Makefile /lib reference if you are not building on NixOS. 
 
 # Interface
-Uses a sysfs interface at `/sys/kernel/otp_interface`.
+Uses a sysfs interface at `/sys/devices/platform/otp/interface`.
 
 Two files:
 - `in`: write a command

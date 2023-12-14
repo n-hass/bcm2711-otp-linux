@@ -1,5 +1,6 @@
 #pragma once
 #include <linux/types.h>
+#include <linux/io.h>
 
 #ifdef MMIO_BASE_VIRT
   #define BCM_PERIPH_BASE_VIRT    (MMIO_BASE_VIRT)
@@ -66,6 +67,8 @@ enum otp_command {
 #endif
 
 #define OTP_PROG_EN_SEQ { 0xf, 0x4, 0x8, 0xd };
+
+extern void __iomem *otp_base;
 
 #ifdef WRITE_ENABLED
 int otp_write(uint8_t addr, uint32_t val);
