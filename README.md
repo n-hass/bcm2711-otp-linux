@@ -1,4 +1,4 @@
-Adapted from the work from [liberpi](https://github.com/librerpi/lk).
+Adapted from the work from [liberpi](https://github.com/librerpi/lk)'s fork of LittleKernel.
 
 Change Makefile /lib reference if you are not building on NixOS. 
 
