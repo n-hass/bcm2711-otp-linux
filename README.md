@@ -1,4 +1,4 @@
-Heavily inspired by the work from [liberpi](https://github.com/librerpi/lk).
+Adapted from the work from [liberpi](https://github.com/librerpi/lk).
 
 Change Makefile /lib reference if you are not build on NixOS. 
 
