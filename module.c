@@ -59,6 +59,7 @@ static ssize_t in_store(struct kobject *kobj, struct kobj_attribute *attr, const
       break;
     case 'w':
       // Perform the write operation
+    #ifdef WRITE_ENABLED
       printk(KERN_INFO "Writing 0x%x to OTP row %u\n", new_val, row_num);
       res = otp_write(row_num, new_val);
       sprintf(output_buf, "w %02d : %d\n", row_num, res);
@@ -67,6 +68,10 @@ static ssize_t in_store(struct kobject *kobj, struct kobj_attribute *attr, const
         return -EIO;
       }
       printk(KERN_INFO "Write to OTP %02d complete\n", row_num);
+    #else
+      printk(KERN_WARNING "Write operation not enabled\n");
+      return -EPERM;
+    #endif
       break;
     case 'c':
       // Clear the output buffer

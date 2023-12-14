@@ -13,6 +13,8 @@ static inline void otp_delay(void) {
   udelay(1);
 }
 
+/// /// /// Reading implementation
+
 static void otp_open(void) {
   iowrite32(3, otp_base + OTP_CONFIG_OFFSET);
   otp_delay();
@@ -59,6 +61,20 @@ static uint32_t otp_read_open(uint8_t addr) {
   return (uint32_t) otp_set_command(0, OTP_CMD_READ) ?: ioread32(otp_base + OTP_DATA_OFFSET);
 }
 
+///
+
+uint32_t otp_read(uint8_t addr) {
+  uint32_t val;
+  otp_open();
+  val = otp_read_open(addr);
+  otp_close();
+  return val;
+}
+
+/// /// /// Writing implementation
+
+#ifdef WRITE_ENABLED
+
 static int otp_enable_program(void) {
   static const uint32_t seq[] = OTP_PROG_EN_SEQ;
   unsigned i;
@@ -80,7 +96,7 @@ static int otp_disable_program(void) {
 }
 
 #ifndef RPI4
-#error original LK code. needs to be migrated to linux kernel module format
+#error original LittleKernel code. has not been rewritten as a linux kernel module yet.
 static int otp_program_bit(uint8_t addr, uint8_t bit)
 {
   uint32_t cmd;
@@ -162,15 +178,7 @@ static int otp_write_open(uint8_t addr, uint32_t val) {
   return err;
 }
 
-// // //
-
-uint32_t otp_read(uint8_t addr) {
-  uint32_t val;
-  otp_open();
-  val = otp_read_open(addr);
-  otp_close();
-  return val;
-}
+///
 
 int otp_write(uint8_t addr, uint32_t val) {
   int err;
@@ -179,3 +187,5 @@ int otp_write(uint8_t addr, uint32_t val) {
   otp_close();
   return err;
 }
+
+#endif // WRITE_ENABLED
